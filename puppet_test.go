@@ -8,6 +8,8 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"reflect"
+	"sort"
 	"testing"
 
 	gohiera "github.com/go-hiera/hiera"
@@ -244,5 +246,172 @@ func TestMapFacts(t *testing.T) {
 	facts := m.Facts()
 	if len(facts) != 2 || facts["kernel"] != "Linux" {
 		t.Fatalf("Facts() = %v, want the backing map", facts)
+	}
+}
+
+// canonResource is an order-independent snapshot of a catalog resource used to
+// compare an HCL2 catalog against its Puppet twin.
+type canonResource struct {
+	Ref    string
+	Type   string
+	Title  string
+	Params map[string]any
+	Tags   []string
+}
+
+// canon returns a catalog's resources sorted by ref and its edges sorted
+// lexicographically, so two catalogs built from twin manifests compare equal
+// regardless of declaration/insertion order.
+func canon(c *Catalog) ([]canonResource, [][2]string) {
+	res := c.Resources()
+	out := make([]canonResource, len(res))
+	for i, r := range res {
+		out[i] = canonResource{Ref: r.Ref(), Type: r.Type, Title: r.Title, Params: r.Parameters, Tags: r.Tags}
+	}
+	sort.Slice(out, func(i, j int) bool { return out[i].Ref < out[j].Ref })
+
+	edges := c.Edges()
+	es := make([][2]string, len(edges))
+	copy(es, edges)
+	sort.Slice(es, func(i, j int) bool {
+		if es[i][0] != es[j][0] {
+			return es[i][0] < es[j][0]
+		}
+		return es[i][1] < es[j][1]
+	})
+	return out, es
+}
+
+// assertSameCatalog compiles hclSrc as HCL2 and ppSrc as Puppet under the same
+// options and fails unless the two catalogs are identical (resources + edges),
+// which is the whole contract of HCL2 support.
+func assertSameCatalog(t *testing.T, hclSrc, ppSrc string, opts CompileOptions) {
+	t.Helper()
+
+	hcat, hlogs, err := CompileHCL(hclSrc, opts)
+	if err != nil {
+		t.Fatalf("CompileHCL error: %v", err)
+	}
+	if len(hlogs) != 0 {
+		t.Fatalf("HCL2 compile emitted logs: %v", hlogs)
+	}
+
+	ppOpts := opts
+	ppOpts.Format = FormatPuppet
+	pcat, _, err := Compile(ppSrc, ppOpts)
+	if err != nil {
+		t.Fatalf("Compile(puppet) error: %v", err)
+	}
+
+	hRes, hEdges := canon(hcat)
+	pRes, pEdges := canon(pcat)
+	if !reflect.DeepEqual(hRes, pRes) {
+		t.Fatalf("resources differ:\n HCL2: %#v\n PP:   %#v", hRes, pRes)
+	}
+	if !reflect.DeepEqual(hEdges, pEdges) {
+		t.Fatalf("edges differ:\n HCL2: %v\n PP:   %v", hEdges, pEdges)
+	}
+
+	// The JSON surfaces must also coincide up to catalog name.
+	var hj, pj map[string]any
+	if err := json.Unmarshal([]byte(hcat.JSON()), &hj); err != nil {
+		t.Fatalf("HCL2 JSON invalid: %v", err)
+	}
+	if err := json.Unmarshal([]byte(pcat.JSON()), &pj); err != nil {
+		t.Fatalf("PP JSON invalid: %v", err)
+	}
+}
+
+// TestCompileHCLLiteralAttrs: a lone resource with literal attributes compiles
+// to the same catalog as its .pp twin.
+func TestCompileHCLLiteralAttrs(t *testing.T) {
+	hcl := `
+resource "notify" "hello" {
+  message = "world"
+  withhold = true
+}
+`
+	pp := `
+notify { 'hello':
+  message  => 'world',
+  withhold => true,
+}
+`
+	assertSameCatalog(t, hcl, pp, CompileOptions{NodeName: "n1"})
+}
+
+// TestCompileHCLLocalsInterpolation: a locals block plus local.X used both bare
+// and interpolated into an attribute round-trips to the identical catalog.
+func TestCompileHCLLocalsInterpolation(t *testing.T) {
+	hcl := `
+locals {
+  msg = "hi"
+}
+resource "notify" "greet" {
+  message = local.msg
+  withval = "val ${local.msg}"
+}
+`
+	pp := `
+$msg = 'hi'
+notify { 'greet':
+  message => $msg,
+  withval => "val ${msg}",
+}
+`
+	assertSameCatalog(t, hcl, pp, CompileOptions{NodeName: "n1"})
+}
+
+// TestCompileHCLResourceReference: a resource.TYPE.TITLE reference used as a
+// require metaparameter yields the same relationship edge as the .pp twin.
+func TestCompileHCLResourceReference(t *testing.T) {
+	hcl := `
+resource "package" "nginx" {
+  ensure = "installed"
+}
+resource "service" "nginx" {
+  ensure  = "running"
+  require = resource.package.nginx
+}
+`
+	pp := `
+package { 'nginx': ensure => 'installed' }
+service { 'nginx':
+  ensure  => 'running',
+  require => Package['nginx'],
+}
+`
+	assertSameCatalog(t, hcl, pp, CompileOptions{NodeName: "n1"})
+}
+
+// TestCompileHCLViaFormatField drives the FormatHCL2 path through Compile's
+// options field directly (rather than the CompileHCL convenience wrapper).
+func TestCompileHCLViaFormatField(t *testing.T) {
+	cat, _, err := Compile(`resource "notify" "x" { message = "y" }`, CompileOptions{Format: FormatHCL2})
+	if err != nil {
+		t.Fatalf("Compile(FormatHCL2) error: %v", err)
+	}
+	r, ok := cat.Resource("Notify[x]")
+	if !ok {
+		t.Fatal("Notify[x] not found")
+	}
+	if r.Parameters["message"] != "y" {
+		t.Fatalf("message = %v, want y", r.Parameters["message"])
+	}
+}
+
+// TestCompileHCLParseError: a malformed HCL2 manifest surfaces the front-end's
+// syntax error through the parse step.
+func TestCompileHCLParseError(t *testing.T) {
+	if _, _, err := CompileHCL(`resource "notify" "x" {`, CompileOptions{}); err == nil {
+		t.Fatal("CompileHCL(malformed) returned nil error")
+	}
+}
+
+// TestCompileHCLUnsupportedConstruct: a construct the HCL2 front-end does not
+// translate (a bare variable reference) surfaces as an error, not a silent stub.
+func TestCompileHCLUnsupportedConstruct(t *testing.T) {
+	if _, _, err := CompileHCL(`locals { a = b }`, CompileOptions{}); err == nil {
+		t.Fatal("CompileHCL(unsupported) returned nil error")
 	}
 }

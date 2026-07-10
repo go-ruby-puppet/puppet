@@ -2,9 +2,15 @@ github.com/go-facter/facter v0.0.0-20260708052836-752b1a3edee0 h1:1PUT8X4gKZsXEV
 github.com/go-facter/facter v0.0.0-20260708052836-752b1a3edee0/go.mod h1:ghuoOHWXdq5dE3GLPDiz3Uy0ORrvK+1hB7QC997ez2U=
 github.com/go-hiera/hiera v0.0.0-20260708051558-73bff6edd0e9 h1:SydVW8z9lhzfLFvLTsaUPoNmStmdp/09DmI7Vwxz9QE=
 github.com/go-hiera/hiera v0.0.0-20260708051558-73bff6edd0e9/go.mod h1:Xsrq+9d6EzW6Ju6DyJpIDDj4CYGka5ZAOWlBbQOOE5k=
+github.com/go-hocon/hocon v0.0.0-20260709172937-6d69e3b57178 h1:EGvh/i6BkxL7/jMOXFyN5xDX4Ya/Oz8D8wHT5i5Xttg=
+github.com/go-hocon/hocon v0.0.0-20260709172937-6d69e3b57178/go.mod h1:2231cAwqF+bztx0saIVdVSKtnvkx1VVxncHSNSEPu/4=
 github.com/go-pcore/pcore v0.0.0-20260708052910-1416bf219e47 h1:pPEpa5r9lGvOEbiyt04kdlg3up8SnfYc6tRTsPuu2Ec=
 github.com/go-pcore/pcore v0.0.0-20260708052910-1416bf219e47/go.mod h1:MgngaL59lB3D41kl/VWYfkem1sJDBbh3JXG/y/Lrnjo=
-github.com/go-puppet/puppet v0.0.0-20260708073959-a9485a7b2835 h1:JTJZdqwGkyVTr+RH7J50RlIsPAM6sXO1yI9LpEqsp+E=
-github.com/go-puppet/puppet v0.0.0-20260708073959-a9485a7b2835/go.mod h1:50AT4WdsGTwCfLoPiCa0GwM4Q2rFb5bD+OWJ36Pd3E4=
+github.com/go-puppet/puppet v0.0.0-20260710130746-3ef04469bb7e h1:5CU5wIZJpj5eW/4Ign00JKh4tKr1Lc3M9c0nfIfcUOc=
+github.com/go-puppet/puppet v0.0.0-20260710130746-3ef04469bb7e/go.mod h1:AaqsDdZnb05OGpLo4iZpZzf243+L4I0dxCZ71gfyKU0=
+github.com/go-ruby-hcl2/hcl2 v0.0.0-20260710124332-eb19348a7e48 h1:n1ciIb0KvjyO3bzr7JGemsYQSNj6cMAhoBPja9U0dc0=
+github.com/go-ruby-hcl2/hcl2 v0.0.0-20260710124332-eb19348a7e48/go.mod h1:zPgLGk8wYhXACwDsJqxkdK09WgWbJwalPxiw6qHMGQg=
 github.com/go-ruby-yaml/yaml v0.0.0-20260706120500-56d458798003 h1:SJ9mY8e11Lv0MbTh9CSxYMhY4AyaDHRmc3mYE+WQOQM=
 github.com/go-ruby-yaml/yaml v0.0.0-20260706120500-56d458798003/go.mod h1:HtbQgnZpSTJBAhPg1jOKgHycZl3tXgf9ZdOu4dnHWjQ=
+golang.org/x/crypto v0.54.0 h1:YLIA59K4fiNzHzjnZt2tUJQjQtUWfWbeHBqKtk3eScw=
+golang.org/x/crypto v0.54.0/go.mod h1:KWL8ny2AZdGR2cWmzeHrp2azQPGogOv+HeQaVEXC2dk=
