@@ -21,6 +21,10 @@
 //   - [Compile], which compiles a manifest into a catalog given a node's
 //     facts, name and optional Hiera configuration, returning the compiled
 //     catalog, the notice/warning/err log lines and any evaluation error;
+//   - [CompileHCL] (and the [CompileOptions] Format field), which compiles a
+//     Terraform-style HCL2 manifest into the identical catalog by swapping only
+//     the parse step for the go-puppet hcl front-end and sharing the whole
+//     evaluate→catalog path with the native Puppet compile;
 //   - [Catalog] and [Resource], a Ruby-shaped view of the compiled catalog:
 //     resources addressed by their canonical `Type[Title]` reference, edges as
 //     flat source/target reference pairs, the catalog size, and the Puppet

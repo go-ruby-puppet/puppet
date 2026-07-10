@@ -7,8 +7,10 @@ package puppet
 import (
 	gohiera "github.com/go-hiera/hiera"
 	gopuppet "github.com/go-puppet/puppet"
+	"github.com/go-puppet/puppet/ast"
 	"github.com/go-puppet/puppet/catalog"
 	"github.com/go-puppet/puppet/eval"
+	"github.com/go-puppet/puppet/hcl"
 )
 
 // LogEntry re-exports the engine's notice/warning/err log line so a Ruby
@@ -99,8 +101,34 @@ func (m mapFacts) Fact(name string) (eval.Value, bool) {
 // Facts returns the whole facts map (exposed to manifests as `$facts`).
 func (m mapFacts) Facts() map[string]any { return map[string]any(m) }
 
+// Format selects the surface syntax a manifest is written in. Both formats
+// parse to the same [ast.Program] and evaluate through the identical engine, so
+// they produce identical catalogs.
+type Format int
+
+const (
+	// FormatPuppet is native Puppet (.pp) source. It is the zero value, so a
+	// CompileOptions with no Format set stays a Puppet compile.
+	FormatPuppet Format = iota
+	// FormatHCL2 is Terraform-style HCL2 source, translated to the same AST by
+	// the go-puppet hcl front-end.
+	FormatHCL2
+)
+
+// parseManifest parses a manifest into a program using the front-end selected
+// by format. It is the single seam where Puppet and HCL2 diverge; every later
+// step (evaluate → catalog) is shared.
+func parseManifest(manifest string, format Format) (*ast.Program, error) {
+	if format == FormatHCL2 {
+		return hcl.Parse(manifest)
+	}
+	return gopuppet.Parse(manifest)
+}
+
 // CompileOptions carries the node context for a compile.
 type CompileOptions struct {
+	// Format is the surface syntax of the manifest (default FormatPuppet).
+	Format Format
 	// Facts are the node facts, also exposed to manifests via $facts and the
 	// engine's FactsProvider.
 	Facts map[string]any
@@ -144,11 +172,26 @@ func Compile(manifest string, opts CompileOptions) (*Catalog, []LogEntry, error)
 		evalOpts = append(evalOpts, eval.WithHiera(h))
 	}
 
-	cat, logs, err := eval.EvalString(manifest, evalOpts...)
+	prog, err := parseManifest(manifest, opts.Format)
+	if err != nil {
+		return nil, nil, err
+	}
+	e := eval.New(evalOpts...)
+	cat, err := e.EvalProgram(prog)
+	logs := e.Logs()
 	if err != nil {
 		return nil, logs, err
 	}
 	return &Catalog{cat: cat}, logs, nil
+}
+
+// CompileHCL compiles a Terraform-style HCL2 manifest into a catalog. It is a
+// convenience wrapper that forces opts.Format to FormatHCL2 before delegating to
+// Compile; the resulting catalog is identical to the one the twin Puppet source
+// would produce.
+func CompileHCL(manifest string, opts CompileOptions) (*Catalog, []LogEntry, error) {
+	opts.Format = FormatHCL2
+	return Compile(manifest, opts)
 }
 
 // factsScope builds a Hiera MapScope from a facts map, placing every fact at
