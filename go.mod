@@ -4,7 +4,7 @@ go 1.26.4
 
 require (
 	github.com/go-hiera/hiera v0.0.0-20260708051558-73bff6edd0e9
-	github.com/go-puppet/puppet v0.0.0-20260805203909-d5d060c8a751
+	github.com/go-puppet/puppet v0.0.0-20260831064218-ab6e40079f54
 )
 
 require (
