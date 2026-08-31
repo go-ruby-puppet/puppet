@@ -12,6 +12,8 @@ github.com/go-puppet/puppet v0.0.0-20260710130746-3ef04469bb7e h1:5CU5wIZJpj5eW/
 github.com/go-puppet/puppet v0.0.0-20260710130746-3ef04469bb7e/go.mod h1:AaqsDdZnb05OGpLo4iZpZzf243+L4I0dxCZ71gfyKU0=
 github.com/go-puppet/puppet v0.0.0-20260805203909-d5d060c8a751 h1:3ux+2bDtZpjHztQDb1rv6CW5s8y1jSFq5wtSKFDPekg=
 github.com/go-puppet/puppet v0.0.0-20260805203909-d5d060c8a751/go.mod h1:kDGYHlz0B4CdYTTNbdPHgSIbV+TJMp+90C6ZCzFkdjA=
+github.com/go-puppet/puppet v0.0.0-20260831064218-ab6e40079f54 h1:iBwebeHU3ZZdFRt3gWPKZP+dO0GbGsOFEhAeZh+/hz0=
+github.com/go-puppet/puppet v0.0.0-20260831064218-ab6e40079f54/go.mod h1:kDGYHlz0B4CdYTTNbdPHgSIbV+TJMp+90C6ZCzFkdjA=
 github.com/go-ruby-hcl2/hcl2 v0.0.0-20260710124332-eb19348a7e48 h1:n1ciIb0KvjyO3bzr7JGemsYQSNj6cMAhoBPja9U0dc0=
 github.com/go-ruby-hcl2/hcl2 v0.0.0-20260710124332-eb19348a7e48/go.mod h1:zPgLGk8wYhXACwDsJqxkdK09WgWbJwalPxiw6qHMGQg=
 github.com/go-ruby-yaml/yaml v0.0.0-20260706120500-56d458798003 h1:SJ9mY8e11Lv0MbTh9CSxYMhY4AyaDHRmc3mYE+WQOQM=
