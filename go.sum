@@ -4,6 +4,8 @@ github.com/go-facter/facter v0.0.0-20260708052836-752b1a3edee0 h1:1PUT8X4gKZsXEV
 github.com/go-facter/facter v0.0.0-20260708052836-752b1a3edee0/go.mod h1:ghuoOHWXdq5dE3GLPDiz3Uy0ORrvK+1hB7QC997ez2U=
 github.com/go-hiera/hiera v0.0.0-20260708051558-73bff6edd0e9 h1:SydVW8z9lhzfLFvLTsaUPoNmStmdp/09DmI7Vwxz9QE=
 github.com/go-hiera/hiera v0.0.0-20260708051558-73bff6edd0e9/go.mod h1:Xsrq+9d6EzW6Ju6DyJpIDDj4CYGka5ZAOWlBbQOOE5k=
+github.com/go-hiera/hiera v0.0.0-20260830144306-f9304f6bec92 h1:eyAunbBKGExaT/qWTpapYsBw4lvXApxMixxGs+wek6k=
+github.com/go-hiera/hiera v0.0.0-20260830144306-f9304f6bec92/go.mod h1:Xsrq+9d6EzW6Ju6DyJpIDDj4CYGka5ZAOWlBbQOOE5k=
 github.com/go-hocon/hocon v0.0.0-20260709172937-6d69e3b57178 h1:EGvh/i6BkxL7/jMOXFyN5xDX4Ya/Oz8D8wHT5i5Xttg=
 github.com/go-hocon/hocon v0.0.0-20260709172937-6d69e3b57178/go.mod h1:2231cAwqF+bztx0saIVdVSKtnvkx1VVxncHSNSEPu/4=
 github.com/go-pcore/pcore v0.0.0-20260708052910-1416bf219e47 h1:pPEpa5r9lGvOEbiyt04kdlg3up8SnfYc6tRTsPuu2Ec=
