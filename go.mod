@@ -4,15 +4,16 @@ go 1.26.4
 
 require (
 	github.com/go-hiera/hiera v0.0.0-20260830144306-f9304f6bec92
-	github.com/go-puppet/puppet v0.0.0-20260831064218-ab6e40079f54
+	github.com/go-puppet/puppet v0.0.0-20260918012035-fc6b0424cdbd
 )
 
 require (
-	github.com/go-augeas/augeas v0.0.0-20260710212525-99b7e90237b2 // indirect
-	github.com/go-facter/facter v0.0.0-20260708052836-752b1a3edee0 // indirect
-	github.com/go-hocon/hocon v0.0.0-20260709172937-6d69e3b57178 // indirect
-	github.com/go-pcore/pcore v0.0.0-20260708052910-1416bf219e47 // indirect
-	github.com/go-ruby-hcl2/hcl2 v0.0.0-20260710124332-eb19348a7e48 // indirect
-	github.com/go-ruby-yaml/yaml v0.0.0-20260706120500-56d458798003 // indirect
-	golang.org/x/crypto v0.54.0 // indirect
+	github.com/go-augeas/augeas v0.0.0-20260830115849-a0db83a6594a // indirect
+	github.com/go-encryptions/unixcrypt v0.1.0 // indirect
+	github.com/go-facter/facter v0.0.0-20260830120958-454b72e642ab // indirect
+	github.com/go-hocon/hocon v0.0.0-20260831114632-08e716b40e6d // indirect
+	github.com/go-pcore/pcore v0.0.0-20260831114716-f9c3e7f59eaa // indirect
+	github.com/go-ruby-hcl2/hcl2 v0.0.0-20260717065417-6b99e6076938 // indirect
+	github.com/go-ruby-yaml/yaml v0.0.0-20260916104302-910ced2db1c7 // indirect
+	golang.org/x/crypto v0.57.0 // indirect
 )
