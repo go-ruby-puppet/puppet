@@ -3,7 +3,7 @@ module github.com/go-ruby-puppet/puppet
 go 1.27.1
 
 require (
-	github.com/go-hiera/hiera v0.0.0-20260830144306-f9304f6bec92
+	github.com/go-hiera/hiera v0.0.0-20261004233440-208f78802339
 	github.com/go-puppet/puppet v0.0.0-20260918012035-fc6b0424cdbd
 )
 
